@@ -22,7 +22,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;ClassesEntidades.CidadeCodigo&gt;"/>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;bd.DAO.CidadeCodigo&gt;"/>
       </AuxValues>
     </Component>
     <Component class="converter.RowSorter" name="rowSorter1">

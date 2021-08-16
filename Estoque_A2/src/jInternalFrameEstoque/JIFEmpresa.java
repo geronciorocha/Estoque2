@@ -29,12 +29,10 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.persistence.Query;
 import javax.swing.JTable;
 
 public class JIFEmpresa extends javax.swing.JInternalFrame {
 
-    
     public static AliquotaSimplesNacional alq = null;
     private Empresa EMPRESA = null;
     private List<TipoPagamento> tipoPagamentoList = new ArrayList<>();
@@ -1162,8 +1160,6 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
                 }
             }
         } catch (Exception ex) {
-        } finally {
-            bd.Bd.conection.connectionA.closeEntityManager();
         }
     }
 
@@ -4127,16 +4123,10 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
 
         if (jCheckBox1.isSelected()) {
-            try{
             jComboBox3.setEnabled(true);
             jTable1.setEnabled(true);
             jButton1.setEnabled(true);
             EMPRESA.setEmissaoBoleto(1);
-            bd.Bd.conection.connectionA.currentEntityManager().persist(EMPRESA);
-            }catch(Exception ex){
-            }finally{
-                bd.Bd.conection.connectionA.closeEntityManager();
-            }
         } else {
             jComboBox3.setEnabled(false);
             jTable1.setEnabled(false);
@@ -4240,11 +4230,7 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
                     } else {
                         tipoPagamentoCartao.setRecebimentoPacelado(1);
                     }
-                    bd.Bd.conection.connectionA.currentEntityManager().persist(tipoPagamentoCartao);
-                    if (!bd.Bd.conection.connectionA.currentEntityManager().isOpen() || !bd.Bd.conection.connectionA.currentEntityManager().getTransaction().isActive()) {
-                        bd.Bd.conection.connectionA.currentEntityManager().getTransaction().begin();
-                    }
-                    bd.Bd.conection.connectionA.currentEntityManager().getTransaction().commit();
+                    new Controller().ControllerPersistMerge(TipoPagamentoCartao.class, tipoPagamentoCartao);
 
                     modelTableFormaPagamento3.setNumRows(jTable3.getRowCount() + 1);
                     jTable3.setModel(modelTableFormaPagamento3);
@@ -4261,8 +4247,6 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
                 }
             } catch (NullPointerException e) {
             } catch (Exception ex){
-            } finally {
-                bd.Bd.conection.connectionA.closeEntityManager();
             }
         } else {
             JOptionPane.showMessageDialog(rootPane, "Esta forma de pagamento já está sendo utilizada,\nEscolha outra.", "Erro forma de pagamento", 0);
@@ -4283,16 +4267,10 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
     private void jCheckBox13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox13ActionPerformed
 
         if (jCheckBox13.isSelected()) {
-            try{
             jComboBox7.setEnabled(true);
             jTable4.setEnabled(true);
             jButton4.setEnabled(true);
             EMPRESA.setEmissaoPromissoria(1);
-            bd.Bd.conection.connectionA.currentEntityManager().persist(EMPRESA);
-            }catch(Exception ex){
-            }finally{
-                bd.Bd.conection.connectionA.closeEntityManager();
-            }
         } else {
             jComboBox7.setEnabled(false);
             jTable4.setEnabled(false);
@@ -4331,7 +4309,6 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         if (!contem()) {
-            try{
             modelTableFormaPagamentoAvista.setNumRows(jTable5.getRowCount() + 1);
             jTable5.setModel(modelTableFormaPagamentoAvista);
             jTable5.setValueAt(jComboBox9.getSelectedItem(), jTable5.getRowCount() - 1, 0);
@@ -4339,20 +4316,6 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
             EMPRESA.getTipoPagamentoAvistaList().add(
                 tipoPagamentoList.get(jComboBox9.getSelectedIndex())
             );
-            bd.Bd.conection.connectionA.currentEntityManager().persist(
-                EMPRESA.getTipoPagamentoAvistaList().get(jComboBox9.getSelectedIndex())
-            );
-            
-            if(!bd.Bd.conection.connectionA.currentEntityManager().isOpen() || 
-               !bd.Bd.conection.connectionA.currentEntityManager().getTransaction().isActive()){
-                    bd.Bd.conection.connectionA.currentEntityManager().getTransaction().begin();
-                }
-                bd.Bd.conection.connectionA.currentEntityManager().getTransaction().commit();
-            }catch(Exception ex){
-            }finally{
-                bd.Bd.conection.connectionA.closeEntityManager();
-            }
-            
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
@@ -4436,7 +4399,7 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
             try {
                 HashMap filtro = new HashMap();
                 filtro.put("cep", jTextField42.getText());
-                List<Cep> listCep = (List<Cep>) new Controller().ControllerFindByNameDesc(Cep.class, filtro);
+                List<Cep> listCep = (List<Cep>) new Controller().ControllerFindByCodId(Cep.class, filtro);
                 
                 if (listCep == null ? false : listCep.isEmpty()) {
                     br.com.parg.viacep.CEP cepWeb = new br.com.parg.viacep.CEP();
@@ -4502,11 +4465,7 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
                 && alq.getImposto() != null
                 && alq.getTipo() != null
                 && alq.getValor() != null) {
-            if (!bd.Bd.conection.connectionA.currentEntityManager().isOpen() || !bd.Bd.conection.connectionA.currentEntityManager().getTransaction().isActive()) {
-                bd.Bd.conection.connectionA.currentEntityManager().getTransaction().begin();
-            }
-                bd.Bd.conection.connectionA.currentEntityManager().persist(alq);
-                bd.Bd.conection.connectionA.currentEntityManager().getTransaction().commit();
+                alq = new Controller().ControllerPersistMerge(AliquotaSimplesNacional.class, alq);
                 JOptionPane.showMessageDialog(null, "Configuração do Simples Nacional configurada com sucesso!");
                 modelTableSimplesNacional.setNumRows(jTable6.getRowCount() + 1);
                 jTable6.setModel(modelTableSimplesNacional);
@@ -4514,11 +4473,8 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
                 jTable6.setValueAt(alq.getValor().toString(), jTable6.getRowCount() - 1, 1);
                 jTable6.setValueAt(String.valueOf(alq.getTipo()), jTable6.getRowCount() - 1, 2);
                 jTable6.setValueAt(alq, jTable6.getRowCount() - 1, 3);
-            
         }
         }catch(Exception ex){
-        }finally{
-            bd.Bd.conection.connectionA.closeEntityManager();
         }
         
     }//GEN-LAST:event_jButton6ActionPerformed
@@ -4538,23 +4494,12 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         try {
-
-            if (!bd.Bd.conection.connectionA.currentEntityManager().isOpen() || 
-                !bd.Bd.conection.connectionA.currentEntityManager().getTransaction().isActive()) {
-                bd.Bd.conection.connectionA.currentEntityManager().getTransaction().begin();
+            if(new Controller().ControllerRemove(EMPRESA.getTipoPagamentoPromissoriaList().get(jTable4.getSelectedRow()))){
+                modelTableFormaPagamento2 = (DefaultTableModel) jTable4.getModel();
+                modelTableFormaPagamento2.removeRow(jTable4.getSelectedRow());
+                jTable4.setModel(modelTableFormaPagamento2);
             }
-            
-            Object ob = bd.Bd.conection.connectionA.currentEntityManager().merge(
-                    EMPRESA.getTipoPagamentoPromissoriaList().get(jTable4.getSelectedRow())
-            );
-            bd.Bd.conection.connectionA.currentEntityManager().remove(ob);
-            modelTableFormaPagamento2 = (DefaultTableModel) jTable4.getModel();
-            modelTableFormaPagamento2.removeRow(jTable4.getSelectedRow());
-            jTable4.setModel(modelTableFormaPagamento2);
-            bd.Bd.conection.connectionA.currentEntityManager().getTransaction().commit();
         } catch (Exception ex) {
-        } finally {
-            bd.Bd.conection.connectionA.closeEntityManager();
         }
 
     }//GEN-LAST:event_jMenuItem1ActionPerformed
@@ -4663,7 +4608,7 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
             try {
                 codigoConfigTaxaCartao = (Integer) jTable2.getValueAt(jTable2.getSelectedRow(), 5);
                 if (codigoConfigTaxaCartao > 0) {
-                    ConfigTaxaCartao cartao = bd.Bd.conection.connectionA.currentEntityManager().find(ConfigTaxaCartao.class, codigoConfigTaxaCartao);
+                    ConfigTaxaCartao cartao = new Controller().ControllerFind(ConfigTaxaCartao.class, codigoConfigTaxaCartao);
 
                     if (cartao != null) {
                         new Controller().ControllerRemove(cartao);
@@ -4674,8 +4619,6 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
                     }
                 }
             } catch (Exception x) {
-            } finally {
-                bd.Bd.conection.connectionA.closeEntityManager();
             }
         } else {
             JOptionPane.showMessageDialog(null, "Selecione uma taxa para ser removida!", "Confiança Sistemas", 0);
@@ -4716,8 +4659,6 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
             jTable5.setModel(modelTableFormaPagamentoAvista);
         } catch (Exception ex) {
             Logger.getLogger(JIFEmpresa.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            bd.Bd.conection.connectionA.closeEntityManager();
         }
     }//GEN-LAST:event_Remov1ActionPerformed
 
@@ -4727,10 +4668,7 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
             modelTableFormaPagamento = (DefaultTableModel) jTable1.getModel();
             modelTableFormaPagamento.removeRow(jTable1.getSelectedRow());
             jTable1.setModel(modelTableFormaPagamento);
-            bd.Bd.conection.connectionA.currentEntityManager().getTransaction().commit();
         } catch (Exception ex) {
-        } finally {
-            bd.Bd.conection.connectionA.closeEntityManager();
         }
     }//GEN-LAST:event_Remov2ActionPerformed
 
@@ -4776,8 +4714,6 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
                 jTable6.setValueAt(alq, jTable6.getRowCount() - 1, 3);
         }
         }catch(Exception ex){
-        }finally{
-            bd.Bd.conection.connectionA.closeEntityManager();
         }
     }//GEN-LAST:event_jButton8ActionPerformed
 
@@ -5510,8 +5446,8 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
             
             HashMap filtro = new HashMap();
             filtro.put("cep", jTextField42.getText());
-            List<Cep> listCep = (List<Cep>) new Controller().ControllerFindByNameDesc(Cep.class, filtro);
-            if (listCep == null ? false : listCep.isEmpty()) {
+            List<Cep> listCep = (List<Cep>) new Controller().ControllerFindByCodId(Cep.class, filtro);
+            if (listCep == null ? false : !listCep.isEmpty()) {
                 contabilista.setCep(listCep.get(0));
             }else{
                 contabilista.setCep(null);
@@ -5546,6 +5482,7 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
             new Controller().ControllerPersistMerge(Contabilista.class, contabilista);
             
         } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(JIFEmpresa.class.getName()).log(Level.SEVERE, null, ex);
         }
         return contabilista;

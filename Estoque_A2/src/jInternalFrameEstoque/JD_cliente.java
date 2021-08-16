@@ -40,11 +40,10 @@ public class JD_cliente extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-		try{
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        //b
-        cidadeCodigoQuery = java.beans.Beans.isDesignTime() ? null : bd.Bd.conection.connectionA.currentEntityManager().createQuery("SELECT c FROM CidadeCodigo c");
+        siscom_marmoariaPUEntityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory(null).createEntityManager();
+        cidadeCodigoQuery = java.beans.Beans.isDesignTime() ? null : siscom_marmoariaPUEntityManager.createQuery("SELECT c FROM CidadeCodigo c");
         cidadeCodigoList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : cidadeCodigoQuery.getResultList();
         rowSorter1 = new converter.RowSorter();
         buttonGroup1 = new javax.swing.ButtonGroup();
@@ -538,11 +537,6 @@ public class JD_cliente extends javax.swing.JDialog {
 
         pack();
         setLocationRelativeTo(null);
-		}catch(Exception ex){
-			
-		} finally{
-                bd.Bd.conection.connectionA.closeEntityManager();
-            }
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -765,7 +759,7 @@ public class JD_cliente extends javax.swing.JDialog {
     public static javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private converter.RowSorter rowSorter1;
-    //b
+    private javax.persistence.EntityManager siscom_marmoariaPUEntityManager;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
