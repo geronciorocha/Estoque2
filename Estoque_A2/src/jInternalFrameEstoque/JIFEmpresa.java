@@ -4433,22 +4433,41 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
 
     private void jTextField42KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField42KeyReleased
         if (jTextField42.getText().length() == 9) {
-            try{
-            javax.persistence.Query q = bd.Bd.conection.connectionA.currentEntityManager().createNamedQuery("Cep.findByCep");
-            q.setParameter("cep", jTextField42.getText());
-            List<Cep> listCep = q.getResultList();
-            jTextField43.setText(listCep.get(0).getLogradouro());
-            jTextField46.setText(listCep.get(0).getBairro());
-            jTextField50.setText(listCep.get(0).getCidade());
-            HashMap filtro = new HashMap();
-            filtro.put("nome", listCep.get(0).getCidade());
-            List<CidadeCodigo> listCidade = (List<CidadeCodigo>) new Controller().ControllerFindByNameDesc(CidadeCodigo.class, filtro);
-            if(listCidade==null ? false : !listCidade.isEmpty()){
-                jTextField51.setText(listCidade.get(0).getNome());
-            }
-            }catch(Exception ex){
-            }finally{
-                bd.Bd.conection.connectionA.closeEntityManager();
+            try {
+                HashMap filtro = new HashMap();
+                filtro.put("cep", jTextField42.getText());
+                List<Cep> listCep = (List<Cep>) new Controller().ControllerFindByNameDesc(Cep.class, filtro);
+                
+                if (listCep == null ? false : listCep.isEmpty()) {
+                    br.com.parg.viacep.CEP cepWeb = new br.com.parg.viacep.CEP();
+                    if (jTextField42.getText().length() == 8) {
+                        br.com.parg.viacep.Start st = new br.com.parg.viacep.Start();
+                        st.run(jTextField42.getText());
+                        cepWeb = st.getCep();
+                        if (cepWeb != null) {
+                            bd.DAO.Cep cep = new bd.DAO.Cep();
+                            cep.setBairro(cepWeb.Bairro);
+                            cep.setCep(cepWeb.CEP);
+                            cep.setCidade(cepWeb.Localidade);
+                            cep.setLogradouro(cepWeb.Logradouro);
+                            cep.setUf(cepWeb.Uf);
+                            new Controller().ControllerPersistMerge(bd.DAO.Cep.class, cep);
+                        }
+                    }
+                }
+                
+                if (listCep == null ? false : !listCep.isEmpty()) {
+                    jTextField43.setText(listCep.get(0).getLogradouro());
+                    jTextField46.setText(listCep.get(0).getBairro());
+                    jTextField50.setText(listCep.get(0).getCidade());
+                }
+                filtro.clear();
+                filtro.put("nome", listCep.get(0).getCidade());
+                List<CidadeCodigo> listCidade = (List<CidadeCodigo>) new Controller().ControllerFindByNameDesc(CidadeCodigo.class, filtro);
+                if (listCidade == null ? false : !listCidade.isEmpty()) {
+                    jTextField51.setText(listCidade.get(0).getNome());
+                }
+            } catch (Exception ex) {
             }
         }
     }//GEN-LAST:event_jTextField42KeyReleased
@@ -4544,29 +4563,7 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
         if (!contemDescontoMaximo() && !jMoneyField1.getText().equals("0,00")) {
 
             try {
-                
-                if (!bd.Bd.conection.connectionA.currentEntityManager().isOpen() || !bd.Bd.conection.connectionA.currentEntityManager().getTransaction().isActive()) {
-                    bd.Bd.conection.connectionA.currentEntityManager().getTransaction().begin();
-                }
-                
-                Query q = bd.Bd.conection.connectionA.currentEntityManager().createNativeQuery("ALTER TABLE gupo_produto "
-                        + "ALTER COLUMN desconto TYPE numeric(9,2);");
-                q.executeUpdate();
-
-                if (!bd.Bd.conection.connectionA.currentEntityManager().getTransaction().isActive()) {
-                    bd.Bd.conection.connectionA.currentEntityManager().getTransaction().begin();
-                }
-                bd.Bd.conection.connectionA.currentEntityManager().getTransaction().commit();
-
-            } catch (Exception ex) {
-            } finally {
-                bd.Bd.conection.connectionA.closeEntityManager();
-            }
-
-            try {
-
-                GupoProduto g = gupoProdutoList.get(jComboBox12.getSelectedIndex());
-                GupoProduto grupo = bd.Bd.conection.connectionA.currentEntityManager().find(GupoProduto.class, g.getCodigoGrupo());
+                GupoProduto grupo = gupoProdutoList.get(jComboBox12.getSelectedIndex());
                 grupo.setDesconto(new BigDecimal(jMoneyField1.getText().replace(",", ".")));
                 grupo = new Controller().ControllerPersistMerge(GupoProduto.class, grupo);
                 
@@ -4580,8 +4577,6 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
                 jTable7.setValueAt(jMoneyField1.getText(), jTable7.getRowCount() - 1, 1);
                 jTable7.setValueAt(grupo, jTable7.getRowCount() - 1, 2);
             } catch (Exception ex) {
-            } finally {
-                bd.Bd.conection.connectionA.closeEntityManager();
             }
         }
     }//GEN-LAST:event_jButton9ActionPerformed
@@ -4642,9 +4637,7 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         try {
-            bd.DAO.TipoPagamentoCartao ob = bd.Bd.conection.connectionA.currentEntityManager().merge(
-                    EMPRESA.getTipoPagamentoCartaoList().get(jTable3.getSelectedRow())
-            );
+            bd.DAO.TipoPagamentoCartao ob = EMPRESA.getTipoPagamentoCartaoList().get(jTable3.getSelectedRow());
             
             if (ob != null) {
                 
@@ -4773,11 +4766,7 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
                 && alq.getImposto() != null
                 && alq.getTipo() != null
                 && alq.getValor() != null) {
-            if (!bd.Bd.conection.connectionA.currentEntityManager().isOpen() || !bd.Bd.conection.connectionA.currentEntityManager().getTransaction().isActive()) {
-                bd.Bd.conection.connectionA.currentEntityManager().getTransaction().begin();
-            }
-                bd.Bd.conection.connectionA.currentEntityManager().merge(alq);
-                bd.Bd.conection.connectionA.currentEntityManager().getTransaction().commit();
+                alq = new Controller().ControllerPersistMerge(AliquotaSimplesNacional.class, alq);
                 JOptionPane.showMessageDialog(null, "Configuração do Simples Nacional configurada com sucesso!");
                 modelTableSimplesNacional.setNumRows(jTable6.getRowCount() + 1);
                 jTable6.setModel(modelTableSimplesNacional);
@@ -4785,7 +4774,6 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
                 jTable6.setValueAt(alq.getValor().toString(), jTable6.getRowCount() - 1, 1);
                 jTable6.setValueAt(String.valueOf(alq.getTipo()), jTable6.getRowCount() - 1, 2);
                 jTable6.setValueAt(alq, jTable6.getRowCount() - 1, 3);
-            
         }
         }catch(Exception ex){
         }finally{
@@ -5309,46 +5297,6 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
         cancelar = 0;
     }
     
-    public void setCEP(bd.DAO.Cep cep, String situacao) {
-        if (situacao.equalsIgnoreCase("contabilista")) {
-            br.com.parg.viacep.CEP cepWeb = new br.com.parg.viacep.CEP();
-            if (jTextField42.getText().length() == 8) {
-                br.com.parg.viacep.Start st = new br.com.parg.viacep.Start();
-                st.run(jTextField42.getText());
-                cepWeb = st.getCep();
-                if (cepWeb != null) {
-                    Cep c = null;
-                    try {
-                        if (cep == null) {
-                            c = bd.Bd.conection.connectionA.currentEntityManager().
-                                    find(Cep.class, formataCep(st.getCep().CEP));
-                            if (c != null) {
-                                setCEP(c, situacao);
-                            }
-                        }
-                    } catch (Exception ex) {
-                    }
-
-                } else {
-
-                }
-                /*if (cep != null) {
-                jTextField_endereco.setText(cep.Logradouro);
-                jTextField_bairro.setText(cep.Bairro);
-                jTextField1.setText(cep.Localidade);
-                jTextField_cidade.setText(cep.Ibge);
-                jTextField2.setText(cep.Uf);
-            } else {
-                jTextField_endereco.setText("");
-                jTextField_bairro.setText("");
-                jTextField1.setText("");
-                jTextField_cidade.setText("");
-                jTextField2.setText("");
-            }*/
-            }
-        }
-    }
-    
     
     public String formataCep(String cep){
         String retorno = "";
@@ -5383,26 +5331,7 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
         return contem;
     }
 
-    private Cep getCep(String cep, String situacao) {
-        bd.DAO.Cep c = null;
-        br.com.parg.viacep.CEP cepWeb = new br.com.parg.viacep.CEP();
-        if (cep.length() == 8) {
-            br.com.parg.viacep.Start st = new br.com.parg.viacep.Start();
-            st.run(cep);
-            cepWeb = st.getCep();
-            if (cepWeb != null) {
-                try {
-                    c = bd.Bd.conection.connectionA.currentEntityManager().
-                            find(Cep.class, formataCep(st.getCep().CEP));
-                    if (c != null) {
-                        setCEP(c, situacao);
-                    }
-                } catch (Exception ex) {
-                }
-            }
-        }
-        return c;
-    }
+    
     
     private bd.DAO.Pardigital SalvaParDigital() throws Exception{
        
@@ -5579,7 +5508,14 @@ public class JIFEmpresa extends javax.swing.JInternalFrame {
                 throw new IllegalStateException("Informe um CRC válido para o contador");
             }
             
-            contabilista.setCep(getCep(jTextField42.getText(), "contabilista"));
+            HashMap filtro = new HashMap();
+            filtro.put("cep", jTextField42.getText());
+            List<Cep> listCep = (List<Cep>) new Controller().ControllerFindByNameDesc(Cep.class, filtro);
+            if (listCep == null ? false : listCep.isEmpty()) {
+                contabilista.setCep(listCep.get(0));
+            }else{
+                contabilista.setCep(null);
+            }
             
             contabilista.setLogradouro(jTextField43.getText());
             contabilista.setNumero(jTextField44.getText());
