@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package estoque_a1;
+package estoque_a2;
 
 import FormePrincipal.JFConfianca_estoque;
 
@@ -11,7 +11,7 @@ import FormePrincipal.JFConfianca_estoque;
  *
  * @author Cliente
  */
-public class Estoque_A1 {
+public class Estoque_A2 {
 
     /**
      * @param args the command line arguments

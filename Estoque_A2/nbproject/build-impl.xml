@@ -938,30 +938,6 @@ is divided into following sections:
         </antcall>
         <antcall target="-maybe-call-dep">
             <param name="call.built.properties" value="${built-jar.properties}"/>
-            <param location="${project.EncryptDecryptConfianca}" name="call.subproject"/>
-            <param location="${project.EncryptDecryptConfianca}/build.xml" name="call.script"/>
-            <param name="call.target" value="jar"/>
-            <param name="transfer.built-jar.properties" value="${built-jar.properties}"/>
-            <param name="transfer.not.archive.disabled" value="true"/>
-        </antcall>
-        <antcall target="-maybe-call-dep">
-            <param name="call.built.properties" value="${built-jar.properties}"/>
-            <param location="${project.File}" name="call.subproject"/>
-            <param location="${project.File}/build.xml" name="call.script"/>
-            <param name="call.target" value="jar"/>
-            <param name="transfer.built-jar.properties" value="${built-jar.properties}"/>
-            <param name="transfer.not.archive.disabled" value="true"/>
-        </antcall>
-        <antcall target="-maybe-call-dep">
-            <param name="call.built.properties" value="${built-jar.properties}"/>
-            <param location="${project.ImportCSV}" name="call.subproject"/>
-            <param location="${project.ImportCSV}/build.xml" name="call.script"/>
-            <param name="call.target" value="jar"/>
-            <param name="transfer.built-jar.properties" value="${built-jar.properties}"/>
-            <param name="transfer.not.archive.disabled" value="true"/>
-        </antcall>
-        <antcall target="-maybe-call-dep">
-            <param name="call.built.properties" value="${built-jar.properties}"/>
             <param location="${project.bd}" name="call.subproject"/>
             <param location="${project.bd}/build.xml" name="call.script"/>
             <param name="call.target" value="jar"/>
@@ -1457,30 +1433,6 @@ is divided into following sections:
             <param name="call.built.properties" value="${built-clean.properties}"/>
             <param location="${project.DAO}" name="call.subproject"/>
             <param location="${project.DAO}/build.xml" name="call.script"/>
-            <param name="call.target" value="clean"/>
-            <param name="transfer.built-clean.properties" value="${built-clean.properties}"/>
-            <param name="transfer.not.archive.disabled" value="true"/>
-        </antcall>
-        <antcall target="-maybe-call-dep">
-            <param name="call.built.properties" value="${built-clean.properties}"/>
-            <param location="${project.EncryptDecryptConfianca}" name="call.subproject"/>
-            <param location="${project.EncryptDecryptConfianca}/build.xml" name="call.script"/>
-            <param name="call.target" value="clean"/>
-            <param name="transfer.built-clean.properties" value="${built-clean.properties}"/>
-            <param name="transfer.not.archive.disabled" value="true"/>
-        </antcall>
-        <antcall target="-maybe-call-dep">
-            <param name="call.built.properties" value="${built-clean.properties}"/>
-            <param location="${project.File}" name="call.subproject"/>
-            <param location="${project.File}/build.xml" name="call.script"/>
-            <param name="call.target" value="clean"/>
-            <param name="transfer.built-clean.properties" value="${built-clean.properties}"/>
-            <param name="transfer.not.archive.disabled" value="true"/>
-        </antcall>
-        <antcall target="-maybe-call-dep">
-            <param name="call.built.properties" value="${built-clean.properties}"/>
-            <param location="${project.ImportCSV}" name="call.subproject"/>
-            <param location="${project.ImportCSV}/build.xml" name="call.script"/>
             <param name="call.target" value="clean"/>
             <param name="transfer.built-clean.properties" value="${built-clean.properties}"/>
             <param name="transfer.not.archive.disabled" value="true"/>

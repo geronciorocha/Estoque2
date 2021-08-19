@@ -6,18 +6,20 @@
 package GET;
 
 import bd.DAO.CidadeCodigo;
-import jInternalFrameEstoque.JD_cliente;
 
 /**
  *
  * @author Cliente
  */
-public class GetCidadeCodigo extends CidadeCodigo{
+public class GetCidadeCodigo {
     public GetCidadeCodigo(){
-        JD_cliente cidade = new JD_cliente(null, true);
-        cidade.setVisible(true);
-        cidade.toFront();
-        //this.CidadeCodigo = cidadeCodigo;
+        new JdGetCidadeCodigo(null, true).setVisible(true);
     }
-    public static CidadeCodigo cidadeCodigo;
+    protected static CidadeCodigo cidadeCodigo;
+
+    public static CidadeCodigo getCidadeCodigo() {
+        new GetCidadeCodigo();
+        return cidadeCodigo;
+    }
+    
 }

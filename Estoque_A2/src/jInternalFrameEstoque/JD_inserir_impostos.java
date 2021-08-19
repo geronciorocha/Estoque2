@@ -5,23 +5,21 @@
  */
 package jInternalFrameEstoque;
 
-import FormePrincipal.JFConfianca_estoque;
+import GET.DialogComboBox;
+import POST.PostAliquotaSimplesNacional;
 import bd.DAO.AliquotaSimplesNacional;
 import bd.DAO.ConfigCstAlqSimples;
 import bd.DAO.Cst;
-import bd.DAO.CstCofins;
 import bd.DAO.CstPis;
-import bd.conexao.ConnectionA;
+import dao.Controller;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
-//import static bd.Bd.conection.connectionA;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.Query;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import util.ColoracaoTabela;
@@ -31,26 +29,24 @@ import util.ColoracaoTabela;
  * @author Cliente
  */
 public class JD_inserir_impostos extends javax.swing.JDialog {
-    public static AliquotaSimplesNacional alq = null;
+    //public static AliquotaSimplesNacional alq = null;
     
     
     public JD_inserir_impostos(
             java.awt.Frame parent, 
-            boolean modal, 
-            AliquotaSimplesNacional alq
+            boolean modal
     ){
         super(parent, modal);
-        this.alq = alq;
         initComponents();
         TableCellRenderer colorRenderer = new ColoracaoTabela(null);
-        jTable1.setDefaultRenderer(String.class, colorRenderer);
-        for (int i = 0; i < jTable1.getModel().getColumnCount(); i++) {
-            jTable1.getColumnModel().getColumn(i).setHeaderRenderer(new ColoracaoTabela(null).ColorTableHeader(jTable1, Color.BLACK));
+        jT_cst.setDefaultRenderer(String.class, colorRenderer);
+        for (int i = 0; i < jT_cst.getModel().getColumnCount(); i++) {
+            jT_cst.getColumnModel().getColumn(i).setHeaderRenderer(new ColoracaoTabela(null).ColorTableHeader(jT_cst, Color.BLACK));
         }
         
         abreCampos1(true);
         
-        setValue(alq);
+        setValue(PostAliquotaSimplesNacional.aliquotaSimplesNacional);
     }
 
     List<ConfigCstAlqSimples> listConfigCstAlqSimples = new ArrayList<>();
@@ -73,16 +69,10 @@ public class JD_inserir_impostos extends javax.swing.JDialog {
         abreCampos2(false);
     }
     public void abreCampos2(boolean b){
-        jTextField4.setEnabled(true);
-        jMoneyField3.setEnabled(true);
-        jButton3.setEnabled(true);
         if(b)
         fechaCampos1(false);
     }
     public void fechaCampos2(boolean b){
-        jTextField4.setEnabled(false);
-        jMoneyField3.setEnabled(false);
-        jButton3.setEnabled(false);
         if(b)
         abreCampos1(false);
     }
@@ -92,8 +82,6 @@ public class JD_inserir_impostos extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -104,25 +92,17 @@ public class JD_inserir_impostos extends javax.swing.JDialog {
         jComboBox2 = new javax.swing.JComboBox<>();
         jComboBox1 = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jMoneyField3 = new ClassesEntidades.JMoneyField();
-        jButton3 = new javax.swing.JButton();
+        jT_cst = new javax.swing.JTable();
         jButton4 = new javax.swing.JButton();
-
-        jMenuItem1.setText("Remove");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        jPopupMenu1.add(jMenuItem1);
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(new javax.swing.ImageIcon(getClass().getResource("/img/parametrizar.gif")).getImage());
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -195,16 +175,16 @@ public class JD_inserir_impostos extends javax.swing.JDialog {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jT_cst.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "CST", "CST", "Red. Base calc"
+                "CST", "CST", ""
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false
@@ -218,89 +198,41 @@ public class JD_inserir_impostos extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        jTable1.setComponentPopupMenu(jPopupMenu1);
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setMinWidth(100);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(100);
-            jTable1.getColumnModel().getColumn(0).setMaxWidth(100);
-            jTable1.getColumnModel().getColumn(1).setMinWidth(350);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(350);
-            jTable1.getColumnModel().getColumn(1).setMaxWidth(350);
-            jTable1.getColumnModel().getColumn(2).setMinWidth(100);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(100);
-            jTable1.getColumnModel().getColumn(2).setMaxWidth(100);
+        jT_cst.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jT_cst.getTableHeader().setReorderingAllowed(false);
+        jT_cst.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jT_cstMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jT_cst);
+        if (jT_cst.getColumnModel().getColumnCount() > 0) {
+            jT_cst.getColumnModel().getColumn(0).setMinWidth(100);
+            jT_cst.getColumnModel().getColumn(0).setPreferredWidth(100);
+            jT_cst.getColumnModel().getColumn(0).setMaxWidth(100);
+            jT_cst.getColumnModel().getColumn(1).setMinWidth(350);
+            jT_cst.getColumnModel().getColumn(1).setPreferredWidth(350);
+            jT_cst.getColumnModel().getColumn(1).setMaxWidth(350);
+            jT_cst.getColumnModel().getColumn(2).setMinWidth(0);
+            jT_cst.getColumnModel().getColumn(2).setPreferredWidth(0);
+            jT_cst.getColumnModel().getColumn(2).setMaxWidth(0);
         }
 
-        jTextField4.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jTextField4.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                jTextField4FocusLost(evt);
-            }
-        });
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
-            }
-        });
-        jTextField4.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jTextField4KeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTextField4KeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                jTextField4KeyTyped(evt);
-            }
-        });
-
-        jTextField5.setBackground(new java.awt.Color(255, 255, 204));
-        jTextField5.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jTextField5.setEnabled(false);
-        jTextField5.setFocusable(false);
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel3.setText("CST:");
-
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel4.setText("Red. Base calc.:");
-
-        jMoneyField3.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jMoneyField3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jMoneyField3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMoneyField3ActionPerformed(evt);
-            }
-        });
-        jMoneyField3.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jMoneyField3KeyReleased(evt);
-            }
-        });
-
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Downloads-icon.png"))); // NOI18N
-        jButton3.setText("Adicionar");
-        jButton3.setFocusable(false);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/documentoOrigem16.png"))); // NOI18N
-        jButton4.setText("Informar CST");
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/add.gif"))); // NOI18N
+        jButton4.setText("Adicionar CST");
         jButton4.setFocusable(false);
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/remove.gif"))); // NOI18N
+        jButton3.setText("Remover CST");
+        jButton3.setFocusable(false);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
             }
         });
 
@@ -311,35 +243,24 @@ public class JD_inserir_impostos extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jMoneyField3, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(112, 112, 112)
-                                .addComponent(jButton3))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jComboBox2, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jMoneyField2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addComponent(jTextField5, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jComboBox2, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jMoneyField2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(10, 10, 10))
         );
         jPanel1Layout.setVerticalGroup(
@@ -357,33 +278,21 @@ public class JD_inserir_impostos extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jMoneyField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel3))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel4)
-                        .addComponent(jMoneyField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(2, 2, 2)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2))
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButton3, jTextField5});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButton3, jButton4});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -404,18 +313,25 @@ public class JD_inserir_impostos extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
-        alq.setImposto(jComboBox2.getSelectedItem().toString());
-        if(jComboBox1.getSelectedItem().toString().contains("%")){
-            alq.setTipo('%');
-        }else if(jComboBox1.getSelectedItem().toString().contains("$")){
-            alq.setTipo('$');
+        try {
+            if(PostAliquotaSimplesNacional.aliquotaSimplesNacional==null){
+                PostAliquotaSimplesNacional.aliquotaSimplesNacional = new AliquotaSimplesNacional();
+            }
+            PostAliquotaSimplesNacional.aliquotaSimplesNacional.setImposto(jComboBox2.getSelectedItem().toString());
+            if(jComboBox1.getSelectedItem().toString().contains("%")){
+                PostAliquotaSimplesNacional.aliquotaSimplesNacional.setTipo('%');
+            }else if(jComboBox1.getSelectedItem().toString().contains("$")){
+                PostAliquotaSimplesNacional.aliquotaSimplesNacional.setTipo('$');
+            }
+            PostAliquotaSimplesNacional.aliquotaSimplesNacional.setValor(new BigDecimal(jMoneyField2.getText().replace(".", "").replace(",", ".")));
+            PostAliquotaSimplesNacional.aliquotaSimplesNacional.getConfigCstAlqSimplesList().addAll(listConfigCstAlqSimples);
+            
+            PostAliquotaSimplesNacional.aliquotaSimplesNacional =
+                    new Controller().ControllerPersistMerge(AliquotaSimplesNacional.class, PostAliquotaSimplesNacional.aliquotaSimplesNacional);
+            dispose();
+        } catch (Exception ex) {
+            Logger.getLogger(JD_inserir_impostos.class.getName()).log(Level.SEVERE, null, ex);
         }
-        alq.setValor(new BigDecimal(jMoneyField2.getText().replace(".", "").replace(",", ".")));
-        
-        //alq.setConfigCstAlqSimplesList(listConfigCstAlqSimples);
-        
-        JIFEmpresa.alq = alq;
-        dispose();
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -424,6 +340,7 @@ public class JD_inserir_impostos extends javax.swing.JDialog {
     }//GEN-LAST:event_jMoneyField2KeyReleased
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        PostAliquotaSimplesNacional.aliquotaSimplesNacional = null;
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -439,146 +356,43 @@ public class JD_inserir_impostos extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jMoneyField2ActionPerformed
 
-    private void jTextField4FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField4FocusLost
-
-    }//GEN-LAST:event_jTextField4FocusLost
-
-    private void jTextField4KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyPressed
-        
-        try {
-            switch (jComboBox2.getSelectedIndex()) {
-                case 0:
-                    if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                        Query q = bd.Bd.conection.connectionA.currentEntityManager().createNamedQuery("Cst.findByNumeroCst");
-                        q.setParameter("numeroCst", (jTextField4.getText()));
-                        List<Cst> listCst = q.getResultList();
-                        if (!listCst.isEmpty()) {
-                            jTextField5.setText(listCst.get(0).getDescricaoCst());
-                        } else {
-                            jTextField5.setText("");
-                        }
-                    }   if (evt.getKeyCode() == KeyEvent.VK_F2) {
-                        keyPressed(evt);
-                    }   break;
-                case 1:
-                    if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                        
-                        if (!jTextField4.getText().equals("")) {
-                            Query cstPisQuery = bd.Bd.conection.connectionA.currentEntityManager().createNamedQuery("CstPis.findByNumeroCst");
-                            cstPisQuery.setParameter("numeroCst", jTextField4.getText());
-                            List<CstPis> data;
-                            data = cstPisQuery.getResultList();
-                            jTextField5.setText(data.get(0).getDescricaoCst());
-                        }
-                    }   if (evt.getKeyCode() == KeyEvent.VK_F2) {
-                        
-                        keyPressedPis(evt);
-                        
-                    }   break;
-                case 2:
-                    if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                        
-                        if (!jTextField4.getText().equals("")) {
-                            Query cstCofinsQuery = bd.Bd.conection.connectionA.currentEntityManager().createNamedQuery("CstCofins.findByNumeroCst");
-                            cstCofinsQuery.setParameter("numeroCst", jTextField4.getText());
-                            List<CstCofins> data;
-                            data = cstCofinsQuery.getResultList();
-                            jTextField5.setText(data.get(0).getDescricaoCst());
-                        }
-                    }   if (evt.getKeyCode() == KeyEvent.VK_F2) {
-                        
-                        keyPressedCofins(evt);
-                        
-                    }
-                    break;
-                default:
-                    break;
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(JD_inserir_impostos.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            bd.Bd.conection.connectionA.closeEntityManager();
-        }
-
-    }//GEN-LAST:event_jTextField4KeyPressed
-
-    private void jTextField4KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyReleased
-        
-    }//GEN-LAST:event_jTextField4KeyReleased
-
-    private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyTyped
-        int ascii = evt.getKeyChar();
-
-        if (!(ascii >= 48 && ascii <=57) && !(ascii == evt.VK_BACK_SPACE)){
-
-            evt.consume() ;
-
-        }
-
-        switch (jComboBox2.getSelectedIndex()) {
-            case 0:
-                if (bd.Bd.conection.empresa.getCrt() == '1') {
-                    if (jTextField4.getText().length() >= 4) {
-                        evt.consume();
-                    }
-                } else {
-                    if (jTextField4.getText().length() >= 3) {
-                        evt.consume();
-                    }
-                }
-                break;
-            case 1:
-                if (jTextField4.getText().length() > 2) {
-                    evt.consume();
-                }
-                break;
-            case 2:
-                if (jTextField4.getText().length() > 2) {
-                    evt.consume();
-                }
-                break;
-            default:
-                break;
-        }
-        
-        
-    }//GEN-LAST:event_jTextField4KeyTyped
-
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField5ActionPerformed
-
-    private void jMoneyField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMoneyField3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMoneyField3ActionPerformed
-
-    private void jMoneyField3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jMoneyField3KeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMoneyField3KeyReleased
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        addCstTable(jTextField4.getText(), jTextField5.getText(), jMoneyField3.getText());
-    }//GEN-LAST:event_jButton3ActionPerformed
-
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        removeCstTable();
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if(jButton4.getText().equals("Informar CST")){
+       
+            try {
+                if (jComboBox2.getSelectedItem().toString().equalsIgnoreCase("ICMS")) {
+                    List <Cst> listCst = (List <Cst>) new Controller().ControllerFindAll(Cst.class);
+                    Cst cst = (Cst) DialogComboBox.getItem(listCst.toArray());
+                    if(cst!=null)
+                    addRowTable(cst.getNumeroCst(), cst.getDescricaoCst(), addlistConfigCstAlqSimples(cst.getNumeroCst()));
+                } else if (jComboBox2.getSelectedItem().toString().equalsIgnoreCase("PIS/PASEP") || jComboBox2.getSelectedItem().toString().equalsIgnoreCase("COFINS")) {
+                    List <CstPis> listCst = (List <CstPis>) new Controller().ControllerFindAll(CstPis.class);
+                    CstPis cst = (CstPis) DialogComboBox.getItem(listCst.toArray());
+                    if(cst!=null)
+                    addRowTable(cst.getNumeroCst(), cst.getDescricaoCst(), addlistConfigCstAlqSimples(cst.getNumeroCst()));
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(JD_inserir_impostos.class.getName()).log(Level.SEVERE, null, ex);
+            }
             abreCampos2(true);
-        }else{
-            fechaCampos2(true);
-        }
+        
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        PostAliquotaSimplesNacional.aliquotaSimplesNacional = null;
+        dispose();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void jT_cstMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jT_cstMouseClicked
+        System.out.println(jT_cst.getSelectedRow());
+    }//GEN-LAST:event_jT_cstMouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        removeCstTable();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
@@ -589,97 +403,48 @@ public class JD_inserir_impostos extends javax.swing.JDialog {
     public javax.swing.JComboBox<String> jComboBox2;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
-    public javax.swing.JLabel jLabel3;
-    public javax.swing.JLabel jLabel4;
     public javax.swing.JLabel jLabel5;
-    public javax.swing.JMenuItem jMenuItem1;
     public ClassesEntidades.JMoneyField jMoneyField2;
-    public ClassesEntidades.JMoneyField jMoneyField3;
     public javax.swing.JPanel jPanel1;
-    public javax.swing.JPopupMenu jPopupMenu1;
     public javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTable jTable1;
-    public static javax.swing.JTextField jTextField4;
-    public static javax.swing.JTextField jTextField5;
+    public javax.swing.JTable jT_cst;
     // End of variables declaration//GEN-END:variables
 
-     public void keyPressed(KeyEvent e) {
-        // a tecla F2 foi pressionada
-        if (e.getKeyCode() == KeyEvent.VK_F2) {
-            JDcst cst = new JDcst(null, true);
-            cst.temp = 2;
-            cst.setVisible(true);
-
-        }
-    }
-     
-    public void keyPressedPis(KeyEvent e) {
-        // a tecla F2 foi pressionada
-        if (e.getKeyCode() == KeyEvent.VK_F2) {
-            JDcst_pis cst = new JDcst_pis(null, true, 2);
-            cst.setVisible(true);
-
-        }
+    
+   
+    
+    public ConfigCstAlqSimples addlistConfigCstAlqSimples(String cst) {
+        ConfigCstAlqSimples config = new ConfigCstAlqSimples(getCST(cst));
+        config.setCodigoAlqSimples(PostAliquotaSimplesNacional.aliquotaSimplesNacional);
+        listConfigCstAlqSimples.add(config);
+        return config;
     }
     
-    public void keyPressedCofins(KeyEvent e) {
-        // a tecla F2 foi pressionada
-        if (e.getKeyCode() == KeyEvent.VK_F2) {
-            JDcst_cofins cst = new JDcst_cofins(null, true);
-            cst.temp = 1;
-            cst.setVisible(true);
-
-        }
-    }
-    
-    public void addCstTable(String codigo, String cst, String red){
-        
-        if (addlistConfigCstAlqSimples(codigo, red)) {
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-
-            model.addRow(new Vector(model.getRowCount() + 1));
-            jTable1.setModel(model);
-            jTable1.setRowSelectionInterval(jTable1.getRowCount() - 1, jTable1.getRowCount() - 1);
-            jTable1.setValueAt(codigo, jTable1.getSelectedRow(), 0);
-            jTable1.setValueAt(cst, jTable1.getSelectedRow(), 1);
-            jTable1.setValueAt(red, jTable1.getSelectedRow(), 2);
-        }
-        
-    }
-    
-    public boolean addlistConfigCstAlqSimples(String cst, String red){
-        
-        ConfigCstAlqSimples config = new ConfigCstAlqSimples(getCST(cst), new BigDecimal(red.replace(".", "").replace(",", ".")));
-        if(config!=null){
-            try{
-                config.setCodigoAlqSimples(alq);
-                ConnectionA.currentEntityManager().persist(config);
-            }catch(Exception ex){
+    public void removeCstTable() {
+        if (jT_cst.getSelectedRow() > -1) {
+            try {
+                ConfigCstAlqSimples config = (ConfigCstAlqSimples) jT_cst.getValueAt(jT_cst.getSelectedRow(), 2);
+                new Controller().ControllerRemove(config);
+                DefaultTableModel model = (DefaultTableModel) jT_cst.getModel();
+                model.removeRow(jT_cst.getSelectedRow());
+                jT_cst.setModel(model);
+            } catch (Exception ex) {
                 Logger.getLogger(JD_inserir_impostos.class.getName()).log(Level.SEVERE, null, ex);
             }
-            listConfigCstAlqSimples.add(config);
-            return true;
+        }else{
+            JOptionPane.showMessageDialog(this, "Selecione uma linha na tabela.", "", JOptionPane.ERROR_MESSAGE);
         }
-        return false;
-                
-    }
-    public void removeCstTable(){
-        DefaultTableModel model = (DefaultTableModel)
-                jTable1.getModel();
-        
-        model.removeRow(jTable1.getSelectedRow());
-        jTable1.setModel(model);
     }
     
     public Object getCST(String cst){
         
-        try{
-        if(jComboBox2.getSelectedItem().toString().equalsIgnoreCase("ICMS")){
-            return  ConnectionA.currentEntityManager().find(Cst.class, cst);
-        }else if(jComboBox2.getSelectedItem().toString().equalsIgnoreCase("PIS/PASEP")||jComboBox2.getSelectedItem().toString().equalsIgnoreCase("COFINS")){
-            return ConnectionA.currentEntityManager().find(CstPis.class, cst);
-        }
-        }catch(Exception ex){
+        try {
+            if (jComboBox2.getSelectedItem().toString().equalsIgnoreCase("ICMS")) {
+                return new Controller().ControllerFind(Cst.class, cst);
+            } else if (jComboBox2.getSelectedItem().toString().equalsIgnoreCase("PIS/PASEP") || jComboBox2.getSelectedItem().toString().equalsIgnoreCase("COFINS")) {
+                return new Controller().ControllerFind(CstPis.class, cst);
+            }
+        } catch (Exception ex) {
             Logger.getLogger(JD_inserir_impostos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -690,7 +455,38 @@ public class JD_inserir_impostos extends javax.swing.JDialog {
             jComboBox2.setSelectedItem(alq.getImposto()!=null ? alq.getImposto() : "");
             jComboBox1.setSelectedItem(alq.getTipo() != null ? String.valueOf(alq.getTipo()) : "");
             jMoneyField2.setText(alq.getValor() != null ? String.format("%.2f", alq.getValor().doubleValue()) : "0,00");
+            
+            for (int i = 0; i < alq.getConfigCstAlqSimplesList().size(); i++) {
+                addRowTable(
+                         alq.getConfigCstAlqSimplesList().get(i).getCstIcms()!=null?
+                         alq.getConfigCstAlqSimplesList().get(i).getCstIcms().getNumeroCst() :
+                                 
+                         alq.getConfigCstAlqSimplesList().get(i).getCstPiscofins()!=null?
+                         alq.getConfigCstAlqSimplesList().get(i).getCstPiscofins().getNumeroCst() : ""       
+                         ,
+                         alq.getConfigCstAlqSimplesList().get(i).getCstIcms()!=null?
+                         alq.getConfigCstAlqSimplesList().get(i).getCstIcms().getDescricaoCst() :
+                                 
+                         alq.getConfigCstAlqSimplesList().get(i).getCstPiscofins()!=null?
+                         alq.getConfigCstAlqSimplesList().get(i).getCstPiscofins().getDescricaoCst() : ""
+                         
+                         ,
+                         alq.getConfigCstAlqSimplesList().get(i)
+                         
+                );
+            }
         }
+    }
+    
+    private void addRowTable(String codigo, String cst, ConfigCstAlqSimples config) {
+        DefaultTableModel model = (DefaultTableModel) jT_cst.getModel();
+
+        model.addRow(new Vector(model.getRowCount() + 1));
+        jT_cst.setModel(model);
+        jT_cst.setRowSelectionInterval(jT_cst.getRowCount() - 1, jT_cst.getRowCount() - 1);
+        jT_cst.setValueAt(codigo, jT_cst.getSelectedRow(), 0);
+        jT_cst.setValueAt(cst, jT_cst.getSelectedRow(), 1);
+        jT_cst.setValueAt(config, jT_cst.getSelectedRow(), 2);
     }
     
 }
